@@ -21,7 +21,7 @@
       </a>
       <nav aria-label="Primary navigation">
         <a href="#play">Play</a>
-        <a href="#review">Review</a>
+        <a href="#review">Analysis</a>
         <a href="#vision">Vision</a>
       </nav>
       <div class="header-actions">
@@ -37,13 +37,13 @@
       <section class="hero" id="vision">
         <div class="eyebrow"><span class="live-dot"></span> Chess with clarity</div>
         <h1>Play the move.<br /><em>Know the story.</em></h1>
-        <p class="hero-copy">A focused place to play real chess online and get a clear, honest review of every decision after the clock stops.</p>
+        <p class="hero-copy">A focused place to play real chess online and get a clear, honest analysis of every decision after the clock stops.</p>
         <div class="hero-actions">
           <button id="heroPlayButton" class="button button-primary">Find an online opponent <span>→</span></button>
-          <button id="howItWorksButton" class="button button-quiet">See how review works <span>↓</span></button>
+          <button id="howItWorksButton" class="button button-quiet">See how analysis works <span>↓</span></button>
         </div>
-        <button id="heroKnight" class="hero-knight" type="button" aria-label="Drag the knight or click it to rotate">
-          <span class="knight-halo"></span><span class="knight-piece">♞</span><span class="knight-tip">Drag me</span>
+        <button id="heroKnight" class="hero-knight" type="button" aria-label="Move your cursor over the knight, drag it, or click it to spin">
+          <span class="knight-orbit knight-orbit-one"></span><span class="knight-orbit knight-orbit-two"></span><span class="knight-plinth"></span><span class="knight-halo"></span><span class="knight-piece">♞</span><span class="knight-tip">Move me · click to spin</span>
         </button>
         <div class="hero-footnote"><span>●</span> No distractions. Just the game and what it can teach you.</div>
       </section>
@@ -165,7 +165,7 @@
                 <span class="pulse-label">Position note</span>
                 <p id="positionNote">The center is still up for grabs.</p>
               </div>
-              <p class="panel-note">These live notes are simple guides. The full review appears after the game.</p>
+              <p class="panel-note">These live notes are simple guides. The full analysis appears after the game.</p>
             </div>
 
             <div class="panel-actions">
@@ -180,7 +180,7 @@
       <section class="review-section" id="review">
         <div class="review-intro">
           <p class="section-kicker">After the game</p>
-          <h2>Review that respects<br />your time.</h2>
+          <h2>Analysis that respects<br />your time.</h2>
           <p>Not a wall of arrows. A move-by-move record that shows what mattered, where the game turned, and what to try next.</p>
           <div class="legend">
             <span><i class="legend-dot best"></i> Excellent</span>
@@ -192,14 +192,14 @@
         <div class="review-card">
           <div class="review-card-top">
             <div>
-              <span class="section-kicker">Move review</span>
+              <span class="section-kicker">Move analysis</span>
               <h3 id="reviewTitle">Your game, in context.</h3>
             </div>
-            <span id="reviewState" class="review-state">Play a game to review it</span>
+            <span id="reviewState" class="review-state">Play a game to analyse it</span>
           </div>
           <div id="reviewEmpty" class="review-empty">
             <span class="empty-knight">♘</span>
-            <p>Your review will appear here after you make a few moves.</p>
+            <p>Your analysis will appear here after you make a few moves.</p>
           </div>
           <div id="reviewList" class="review-list"></div>
           <div id="reviewSummary" class="review-summary is-hidden">
@@ -218,7 +218,7 @@
         <article>
           <span>02</span>
           <h3>See the why</h3>
-          <p>Every review label is paired with a plain-language note, not just a verdict.</p>
+          <p>Every analysis label is paired with a plain-language note, not just a verdict.</p>
         </article>
         <article>
           <span>03</span>
@@ -258,9 +258,9 @@
         <div id="endMedallion" class="end-medallion">&#9818;</div>
         <p id="endEyebrow" class="section-kicker">Game complete</p>
         <h2 id="gameEndTitle">You win!</h2>
-        <p id="gameEndMessage">A great finish. Your review is ready whenever you are.</p>
+        <p id="gameEndMessage">A great finish. Your analysis is ready whenever you are.</p>
         <div class="end-actions">
-          <button id="reviewGameButton" class="button button-primary">Review your game <span>&rarr;</span></button>
+          <button id="reviewGameButton" class="button button-primary">Analyze your game <span>&rarr;</span></button>
           <button id="playAgainButton" class="button button-quiet">Play again <span>&#8635;</span></button>
         </div>
       </div>

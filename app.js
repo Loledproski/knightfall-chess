@@ -52,7 +52,7 @@ let checkTimer = null;
 let replayTimer = null;
 let playerProgress = loadPlayerProgress();
 let knightDrag = null;
-let knightPose = { x: 0, y: 0, rotation: -12 };
+let knightPose = { x: 0, y: 0, rotation: -12, tiltX: -4, tiltY: 7 };
 let gameRevision = 0;
 let engineQueue = Promise.resolve();
 const stockfish = { worker: null, ready: null, job: null, status: 'loading' };
@@ -304,16 +304,16 @@ function renderReview() {
   const hasMoves = state.history.length > 0;
   empty.classList.toggle('is-hidden', hasMoves);
   list.innerHTML = hasMoves ? state.history.map((entry, index) => `
-    <article class="review-item">
+    <article class="review-item quality-row-${entry.quality}">
       <span class="review-number">${index + 1}</span>
       <div><strong>${entry.notation} · ${entry.label}</strong><p>${entry.note}</p></div>
       <span class="quality-pill quality-${entry.quality}">${entry.label}</span>
     </article>`).join('') : '';
   const pendingAnalysis = state.history.some((entry) => entry.quality === 'analyzing');
   reviewState.textContent = stockfish.status === 'unavailable'
-    ? 'Quick review only'
-    : pendingAnalysis ? 'Stockfish reviewing…'
-      : state.gameOver ? 'Stockfish game review' : hasMoves ? 'Live Stockfish review' : 'Stockfish readying…';
+    ? 'Quick analysis only'
+    : pendingAnalysis ? 'Stockfish analysing…'
+      : state.gameOver ? 'Stockfish game analysis' : hasMoves ? 'Live Stockfish analysis' : 'Stockfish readying…';
   title.textContent = state.gameOver ? 'What your game can teach you.' : 'Your game, in context.';
   summary.classList.toggle('is-hidden', !hasMoves);
   if (hasMoves) document.querySelector('#summaryText').textContent = buildSummary();
@@ -917,8 +917,8 @@ function queueStockfishReview(index, revision) {
       const moveEntry = state.history[index];
       const openedAsFile = location.protocol === 'file:';
       Object.assign(moveEntry, openedAsFile
-        ? { quality: 'analyzing', label: 'Start the server', note: 'Open http://localhost:3000 instead of index.html to run the full Stockfish review.' }
-        : { quality: 'good', label: 'Quick review', note: 'Stockfish could not finish on this device, so this is a quick estimate.' });
+        ? { quality: 'analyzing', label: 'Start the server', note: 'Open http://localhost:3000 instead of index.html to run the full Stockfish analysis.' }
+        : { quality: 'good', label: 'Quick analysis', note: 'Stockfish could not finish on this device, so this is a quick estimate.' });
       render();
     }
   });
@@ -1155,18 +1155,18 @@ function showGameEndModal() {
   if (state.winner === null) {
     title.textContent = 'Draw game';
     eyebrow.textContent = 'A hard-fought finish';
-    message.textContent = 'Neither side could force a win. Your review highlights the moments that shaped it.';
+    message.textContent = 'Neither side could force a win. Your analysis highlights the moments that shaped it.';
     card.classList.add('draw');
   } else if (state.winner === playerColor) {
     title.textContent = 'You win!';
     eyebrow.textContent = 'Victory is yours';
     message.textContent = state.unlockedRival
       ? `You conquered this challenge. ${state.unlockedRival} has stepped out of the shadows.`
-      : 'Great game. Open the review to see the moves that made the difference.';
+      : 'Great game. Open the analysis to see the moves that made the difference.';
   } else {
     title.textContent = 'You lost';
     eyebrow.textContent = 'Every game teaches';
-    message.textContent = 'The review is ready. Find the turning point, then come back stronger.';
+    message.textContent = 'The analysis is ready. Find the turning point, then come back stronger.';
     card.classList.add('loss');
   }
   gameEndModal.classList.remove('is-hidden');
@@ -1225,6 +1225,17 @@ function setKnightPose() {
   heroKnight.style.setProperty('--drag-x', `${knightPose.x}px`);
   heroKnight.style.setProperty('--drag-y', `${knightPose.y}px`);
   heroKnight.style.setProperty('--knight-rotation', `${knightPose.rotation}deg`);
+  heroKnight.style.setProperty('--knight-tilt-x', `${knightPose.tiltX}deg`);
+  heroKnight.style.setProperty('--knight-tilt-y', `${knightPose.tiltY}deg`);
+}
+
+function pointKnightAt(event) {
+  const bounds = heroKnight.getBoundingClientRect();
+  const horizontal = (event.clientX - bounds.left) / bounds.width - .5;
+  const vertical = (event.clientY - bounds.top) / bounds.height - .5;
+  knightPose.tiltY = Math.max(-24, Math.min(24, horizontal * 38));
+  knightPose.tiltX = Math.max(-23, Math.min(23, -vertical * 34));
+  setKnightPose();
 }
 
 function setupHeroKnight() {
@@ -1235,24 +1246,34 @@ function setupHeroKnight() {
     heroKnight.classList.add('dragging');
   });
   heroKnight.addEventListener('pointermove', (event) => {
-    if (!knightDrag || knightDrag.pointerId !== event.pointerId) return;
+    if (!knightDrag || knightDrag.pointerId !== event.pointerId) {
+      pointKnightAt(event);
+      return;
+    }
     const deltaX = event.clientX - knightDrag.startX;
     const deltaY = event.clientY - knightDrag.startY;
     knightDrag.moved = knightDrag.moved || Math.abs(deltaX) + Math.abs(deltaY) > 5;
     knightPose.x = Math.max(-110, Math.min(185, knightDrag.originX + deltaX));
     knightPose.y = Math.max(-75, Math.min(110, knightDrag.originY + deltaY));
     knightPose.rotation = -12 + knightPose.x * .1 + knightPose.y * .05;
+    pointKnightAt(event);
     setKnightPose();
   });
   const releaseKnight = (event) => {
     if (!knightDrag || knightDrag.pointerId !== event.pointerId) return;
-    if (!knightDrag.moved) knightPose.rotation += 28;
+    if (!knightDrag.moved) knightPose.rotation += 360;
     knightDrag = null;
     heroKnight.classList.remove('dragging');
     setKnightPose();
   };
   heroKnight.addEventListener('pointerup', releaseKnight);
   heroKnight.addEventListener('pointercancel', releaseKnight);
+  heroKnight.addEventListener('pointerleave', () => {
+    if (knightDrag) return;
+    knightPose.tiltX = -4;
+    knightPose.tiltY = 7;
+    setKnightPose();
+  });
 }
 
 setInterval(() => {
