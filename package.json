@@ -1,0 +1,12 @@
+{
+  "name": "knightfall-chess",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A multiplayer chess website with a move-review foundation.",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

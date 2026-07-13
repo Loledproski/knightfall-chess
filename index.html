@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#101916" />
+    <title>Knightfall — Play chess. Understand every move.</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="page-glow glow-one"></div>
+    <div class="page-glow glow-two"></div>
+
+    <header class="site-header">
+      <a class="brand" href="#play" aria-label="Knightfall home">
+        <span class="brand-mark">♞</span>
+        <span>Knightfall</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="#play">Play</a>
+        <a href="#review">Review</a>
+        <a href="#vision">Vision</a>
+      </nav>
+      <div class="header-actions">
+        <button id="themeToggle" class="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false">
+          <span id="themeToggleIcon" aria-hidden="true">&#9790;</span>
+          <span id="themeToggleLabel">Dark</span>
+        </button>
+        <button id="headerPlayButton" class="button button-small">Play now <span>↗</span></button>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" id="vision">
+        <div class="eyebrow"><span class="live-dot"></span> Chess with clarity</div>
+        <h1>Play the move.<br /><em>Know the story.</em></h1>
+        <p class="hero-copy">A focused place to play real chess online and get a clear, honest review of every decision after the clock stops.</p>
+        <div class="hero-actions">
+          <button id="heroPlayButton" class="button button-primary">Find an online opponent <span>→</span></button>
+          <button id="howItWorksButton" class="button button-quiet">See how review works <span>↓</span></button>
+        </div>
+        <button id="heroKnight" class="hero-knight" type="button" aria-label="Drag the knight or click it to rotate">
+          <span class="knight-halo"></span><span class="knight-piece">♞</span><span class="knight-tip">Drag me</span>
+        </button>
+        <div class="hero-footnote"><span>●</span> No distractions. Just the game and what it can teach you.</div>
+      </section>
+
+      <section class="play-section" id="play" aria-label="Chess game">
+        <div class="play-heading">
+          <div>
+            <p class="section-kicker">The board</p>
+            <h2>Your next game starts here.</h2>
+          </div>
+          <div class="mode-tools">
+            <div class="mode-switch" role="group" aria-label="Game mode">
+              <button class="mode-button active" data-mode="local">Local game</button>
+              <button class="mode-button" data-mode="computer">Play the AI</button>
+              <button class="mode-button" data-mode="online">Online match</button>
+            </div>
+            <div id="aiDifficulty" class="ai-difficulty-panel is-hidden" aria-label="AI difficulty ladder">
+              <div class="difficulty-panel-heading">
+                <div><span class="section-kicker">Choose your rival</span><strong>Climb the Knightfall ladder</strong></div>
+                <span id="difficultyUnlockHint" class="unlock-hint">Defeat Master to unlock the legends.</span>
+              </div>
+              <div class="ai-side-picker" role="group" aria-label="Your AI game colour">
+                <span>Your side</span>
+                <button type="button" class="ai-side-button active" data-ai-color="white">♙ White</button>
+                <button type="button" class="ai-side-button" data-ai-color="black">♟ Black</button>
+              </div>
+              <div id="difficultyTrack" class="difficulty-track"></div>
+              <div class="challenge-trail" aria-hidden="true"><span>&#9816;</span><i></i><b>Legend path</b></div>
+            </div>
+            <div class="board-style-control" role="group" aria-label="Board styles">
+              <span class="section-kicker">Board world</span>
+              <div id="boardStyleChoices" class="board-style-choices">
+                <button type="button" data-board-theme="classic">&#127963; Classic</button>
+                <button type="button" data-board-theme="medieval">&#127984; Medieval</button>
+                <button type="button" data-board-theme="scifi">&#127756; Sci-Fi</button>
+                <button type="button" data-board-theme="nature">&#127807; Nature</button>
+                <button type="button" data-board-theme="luxury">&#10024; Luxury</button>
+                <button type="button" data-board-theme="fun">&#127881; Fun</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="game-layout">
+          <section class="board-card">
+            <div class="player-row player-top">
+              <div class="avatar avatar-opponent">N</div>
+              <div class="player-name"><strong id="topPlayerName">New opponent</strong><span id="topPlayerMeta">Waiting to begin</span></div>
+              <div class="clock" id="topClock">10:00</div>
+            </div>
+
+            <div class="board-shell">
+              <div id="board" class="board" role="grid" aria-label="Chessboard"></div>
+              <div id="captureCallout" class="capture-callout is-hidden" role="status" aria-live="polite"></div>
+              <div id="checkAlert" class="check-alert is-hidden" role="alert" aria-live="assertive"></div>
+              <div id="promotionPicker" class="promotion-picker is-hidden" role="dialog" aria-label="Choose a piece for promotion">
+                <span class="section-kicker">Pawn promotion</span>
+                <strong>Choose your new piece</strong>
+                <div class="promotion-choices">
+                  <button type="button" data-promotion-piece="q" aria-label="Promote to queen">&#9813;</button>
+                  <button type="button" data-promotion-piece="r" aria-label="Promote to rook">&#9814;</button>
+                  <button type="button" data-promotion-piece="b" aria-label="Promote to bishop">&#9815;</button>
+                  <button type="button" data-promotion-piece="n" aria-label="Promote to knight">&#9816;</button>
+                </div>
+              </div>
+              <div id="promotionCelebration" class="promotion-celebration is-hidden" aria-live="polite"></div>
+              <div id="queueOverlay" class="queue-overlay is-hidden">
+                <div class="queue-spinner"></div>
+                <strong>Finding a worthy opponent</strong>
+                <span>Keep this tab open — we’ll start as soon as someone joins.</span>
+                <button id="cancelQueueButton" class="text-button">Cancel search</button>
+              </div>
+            </div>
+
+            <div class="player-row player-bottom">
+              <div class="avatar avatar-you">Y</div>
+              <div class="player-name"><strong>You</strong><span id="bottomPlayerMeta">White · Your move</span></div>
+              <div class="clock active-clock" id="bottomClock">10:00</div>
+            </div>
+          </section>
+
+          <aside class="game-panel" aria-label="Game controls and moves">
+            <div class="panel-tabs">
+              <button class="panel-tab active" data-panel="moves">Moves</button>
+              <button class="panel-tab" data-panel="insights">Game pulse</button>
+            </div>
+
+            <div id="movesPanel" class="panel-content">
+              <div class="game-status" id="gameStatus">
+                <span class="status-orb"></span>
+                <span>White to move</span>
+              </div>
+              <div id="liveReviewCoach" class="live-review-coach">
+                <span>Move coach</span>
+                <strong>Your game story starts here.</strong>
+                <p>Every move will get a clear label and a short explanation.</p>
+              </div>
+              <button id="openReplayButton" class="replay-open-button" type="button">Open full replay <span>↗</span></button>
+              <ol id="moveList" class="move-list" aria-live="polite"></ol>
+              <p id="moveHint" class="move-hint">Choose a piece, then choose its destination.</p>
+            </div>
+
+            <div id="insightsPanel" class="panel-content is-hidden">
+              <div class="pulse-card">
+                <span class="pulse-label">Material balance</span>
+                <strong id="materialValue">Even</strong>
+                <div class="balance-bar"><span id="balanceFill"></span></div>
+              </div>
+              <div class="pulse-card">
+                <span class="pulse-label">Position note</span>
+                <p id="positionNote">The center is still up for grabs.</p>
+              </div>
+              <p class="panel-note">These live notes are simple guides. The full review appears after the game.</p>
+            </div>
+
+            <div class="panel-actions">
+              <button id="newGameButton" class="icon-action" title="New local game">↻ <span>New game</span></button>
+              <button id="flipBoardButton" class="icon-action" title="Flip board">⇅ <span>Flip board</span></button>
+              <button id="resignButton" class="icon-action danger" title="Resign game">⚐ <span>Resign</span></button>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="review-section" id="review">
+        <div class="review-intro">
+          <p class="section-kicker">After the game</p>
+          <h2>Review that respects<br />your time.</h2>
+          <p>Not a wall of arrows. A move-by-move record that shows what mattered, where the game turned, and what to try next.</p>
+          <div class="legend">
+            <span><i class="legend-dot best"></i> Excellent</span>
+            <span><i class="legend-dot good"></i> Good</span>
+            <span><i class="legend-dot learn"></i> Learn from this</span>
+          </div>
+        </div>
+
+        <div class="review-card">
+          <div class="review-card-top">
+            <div>
+              <span class="section-kicker">Move review</span>
+              <h3 id="reviewTitle">Your game, in context.</h3>
+            </div>
+            <span id="reviewState" class="review-state">Play a game to review it</span>
+          </div>
+          <div id="reviewEmpty" class="review-empty">
+            <span class="empty-knight">♘</span>
+            <p>Your review will appear here after you make a few moves.</p>
+          </div>
+          <div id="reviewList" class="review-list"></div>
+          <div id="reviewSummary" class="review-summary is-hidden">
+            <span class="summary-label">Your next focus</span>
+            <p id="summaryText"></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="principles">
+        <article>
+          <span>01</span>
+          <h3>Play people</h3>
+          <p>Join a quick queue for a real opponent, or pass the board to a friend beside you.</p>
+        </article>
+        <article>
+          <span>02</span>
+          <h3>See the why</h3>
+          <p>Every review label is paired with a plain-language note, not just a verdict.</p>
+        </article>
+        <article>
+          <span>03</span>
+          <h3>Keep improving</h3>
+          <p>Find the one recurring habit that will make the next game more confident.</p>
+        </article>
+      </section>
+    </main>
+
+    <footer>
+      <a class="brand" href="#play"><span class="brand-mark">♞</span><span>Knightfall</span></a>
+      <p>Made for players who want to understand the game.</p>
+    </footer>
+
+    <div id="replayModal" class="replay-modal is-hidden" role="dialog" aria-modal="true" aria-labelledby="replayTitle">
+      <div class="replay-card">
+        <div class="replay-header">
+          <div><span class="section-kicker">Full game replay</span><h2 id="replayTitle">Your game, one move at a time.</h2></div>
+          <button id="closeReplayButton" class="replay-close" type="button" aria-label="Close full replay">×</button>
+        </div>
+        <div class="replay-layout">
+          <div class="replay-board-wrap"><div id="replayBoard" class="replay-board" aria-label="Replay chessboard"></div></div>
+          <aside class="replay-sidebar"><div id="replayMoveMeta" class="replay-move-meta"></div><ol id="replayMoveList" class="replay-move-list"></ol></aside>
+        </div>
+        <div class="replay-controls">
+          <button id="replayFirstButton" type="button" title="First position">|‹</button>
+          <button id="replayPreviousButton" type="button" title="Previous move">‹</button>
+          <button id="replayPlayButton" class="replay-play" type="button">Play</button>
+          <button id="replayNextButton" type="button" title="Next move">›</button>
+          <button id="replayLastButton" type="button" title="Last position">›|</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="gameEndModal" class="game-end-modal is-hidden" role="dialog" aria-modal="true" aria-labelledby="gameEndTitle">
+      <div class="game-end-card">
+        <div id="endMedallion" class="end-medallion">&#9818;</div>
+        <p id="endEyebrow" class="section-kicker">Game complete</p>
+        <h2 id="gameEndTitle">You win!</h2>
+        <p id="gameEndMessage">A great finish. Your review is ready whenever you are.</p>
+        <div class="end-actions">
+          <button id="reviewGameButton" class="button button-primary">Review your game <span>&rarr;</span></button>
+          <button id="playAgainButton" class="button button-quiet">Play again <span>&#8635;</span></button>
+        </div>
+      </div>
+    </div>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <script src="app.js"></script>
+  </body>
+</html>
