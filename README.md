@@ -1,26 +1,80 @@
-# ♞ Knightfall Chess
+<h1 align="center">♞ Knightfall Chess</h1>
+
+<p align="center">
+<b>Play the move. Know the story.</b><br>
+A modern multiplayer chess platform featuring AI opponents, real-time online matchmaking, multiple time controls, handcrafted board themes, and Stockfish-powered game analysis.
+</p>
 
 <p align="center">
 
-# Play the move. Know the story.
+<a href="https://knightfall-chess.onrender.com">
+<img src="https://img.shields.io/badge/▶%20PLAY%20KNIGHTFALL-CCFF4D?style=for-the-badge&labelColor=10241B&color=CCFF4D">
+</a>
 
-A modern browser-based chess platform where every game becomes a learning experience. Challenge progressive AI opponents, compete in real-time online matches, customize your board, and review every move with Stockfish-powered engine analysis and an interactive replay system.
+<a href="https://github.com/Loledproski/knightfall-chess">
+<img src="https://img.shields.io/badge/SOURCE%20CODE-173026?style=for-the-badge&logo=github&logoColor=white">
+</a>
 
-🌐 **Live Demo:** https://knightfall-chess.onrender.com
+<a href="https://github.com/Loledproski/knightfall-chess/releases">
+<img src="https://img.shields.io/badge/LATEST%20RELEASE-v1.0-2E7D32?style=for-the-badge">
+</a>
 
-💻 **GitHub Repository:** https://github.com/Loledproski/knightfall-chess
+</p>
+
+<p align="center">
+
+<img src="https://img.shields.io/badge/License-MIT-2E7D32?style=flat-square">
+<img src="https://img.shields.io/badge/JavaScript-ES6-F7DF1E?style=flat-square&logo=javascript&logoColor=black">
+<img src="https://img.shields.io/badge/Node.js-22.x-339933?style=flat-square&logo=node.js&logoColor=white">
+<img src="https://img.shields.io/badge/WebSocket-Real--Time-2563EB?style=flat-square">
+<img src="https://img.shields.io/badge/Stockfish-18-B45309?style=flat-square">
+<img src="https://img.shields.io/badge/Hosted%20on-Render-173026?style=flat-square&logo=render&logoColor=white">
+
+</p>
+
+<p align="center">
+
+<a href="#highlights">Highlights</a> •
+<a href="#about">About</a> •
+<a href="#features">Features</a> •
+<a href="#screenshots">Screenshots</a> •
+<a href="#technology-stack">Tech Stack</a> •
+<a href="#run-locally">Run Locally</a> •
+<a href="#future-roadmap">Roadmap</a>
 
 </p>
 
 ---
 
+<p align="center">
+<img src="screenshots/demo.gif" width="100%">
+</p>
+
+---
+
+# Highlights
+
+- ♟ Real-Time Online Multiplayer
+- 🤖 10-Level AI Challenge Ladder
+- 👑 Unlock Five Legendary Opponents
+- 🧠 Stockfish 18 Browser Analysis
+- 🎬 Interactive Replay System
+- 📈 Color-Coded Move Classification
+- ⏱ Four Time Controls (1, 5, 30 & 60 Minutes)
+- 🎨 Six Handcrafted Board Themes
+- 🌙 Light & Dark Mode
+- ⚡ Fast, Lightweight & Built with Vanilla JavaScript
+
+---
+
 # About
+# 📖 About
 
-Knightfall Chess is a modern multiplayer chess platform designed to make every game both competitive and educational. Inspired by professional online chess platforms while maintaining its own unique identity, Knightfall combines real-time gameplay with powerful post-game analysis in a clean and responsive interface.
+Knightfall Chess is a modern browser-based chess platform designed to combine competitive gameplay with educational analysis. Inspired by professional online chess platforms while maintaining its own unique identity, Knightfall allows players to enjoy local games, challenge progressively stronger AI opponents, or compete online through real-time WebSocket matchmaking.
 
-Players can enjoy local games, challenge progressively stronger AI opponents through a ten-level difficulty ladder, or compete against other players using real-time WebSocket matchmaking. Every completed game can be analyzed using Stockfish 18, providing detailed engine evaluations, color-coded move classifications, interactive replay controls, and clear explanations that help players understand both their mistakes and their best moves.
+Every completed game can be reviewed using the integrated Stockfish 18 engine, providing detailed engine evaluations, interactive replay controls, color-coded move classifications, and clear explanations that help players understand every decision they make.
 
-Built using HTML, CSS, Vanilla JavaScript, Node.js, WebSockets, and WebAssembly, Knightfall focuses on delivering a lightweight yet feature-rich chess experience that runs entirely in the browser without sacrificing performance or visual quality.
+Built with HTML, CSS, Vanilla JavaScript, Node.js, WebSockets, and WebAssembly, Knightfall delivers a lightweight yet feature-rich chess experience entirely inside the browser.
 
 ---
 
@@ -30,56 +84,48 @@ Built using HTML, CSS, Vanilla JavaScript, Node.js, WebSockets, and WebAssembly,
 
 - Local Pass-and-Play Chess
 - Real-Time Online Multiplayer
-- Multiple Time Controls (1, 5, 30 & 60 Minutes)
+- Multiple Time Controls
+- Live Chess Clocks
 - Complete Chess Rules
 - Castling
 - En Passant
 - Pawn Promotion
 - Checkmate, Draw & Stalemate Detection
-- Live Chess Clocks
 
 ---
 
 ## 🤖 AI Challenge
 
 - 10 Progressive AI Difficulty Levels
-- Beginner to Master Difficulty Ladder
+- Beginner → Master Ladder
 - Five Unlockable Legendary Opponents
-- Increasing Elo-Based Difficulty Progression
+- Elo-Based Difficulty Progression
 
 ---
 
 ## 🌍 Online Multiplayer
 
-Knightfall includes a WebSocket-powered online matchmaking system that allows players to compete in real time. Players selecting the same time control are automatically matched into a live game where every move is synchronized instantly between both browsers, creating a smooth multiplayer experience with minimal latency.
-
-Features include:
-
-- Live Matchmaking Queue
-- Real-Time Move Synchronization
+- WebSocket Matchmaking
+- Live Move Synchronization
+- Shared Game State
 - Automatic Opponent Pairing
 - Multiple Time Controls
-- Shared Game State
-- Low-Latency Gameplay
+- Low-Latency Multiplayer Experience
 
 ---
 
-## 📊 Stockfish Game Analysis
+## 📊 Stockfish Analysis
 
-Every completed game can be reviewed using the integrated Stockfish 18 WebAssembly engine. Instead of simply displaying moves, Knightfall explains the quality of every decision using engine evaluations and intuitive visual feedback.
-
-The analysis system includes:
-
-- Stockfish 18 Engine Analysis
-- Position Evaluation
+- Stockfish 18 WebAssembly Engine
+- Engine Evaluation
 - Best Move Detection
 - Color-Coded Move Quality
-- Interactive Move Replay
-- Dark-Themed Review Interface
+- Interactive Replay
+- Dark Analysis Interface
 - Engine Explanations
 - Smooth Replay Controls
 
-Move classifications include:
+### Move Classification
 
 - Brilliant
 - Great
@@ -96,23 +142,15 @@ Move classifications include:
 
 ## 🎨 Customization
 
-Knightfall offers multiple handcrafted chess board themes, allowing every player to personalize the game experience.
-
-Available themes include:
-
-- Classic
-- Medieval
-- Sci-Fi
-- Nature
-- Luxury
-- Fun
-
-Additional customization includes:
-
+- Classic Theme
+- Medieval Theme
+- Sci-Fi Theme
+- Nature Theme
+- Luxury Theme
+- Fun Theme
 - Light & Dark Mode
 - Responsive Layout
-- Modern UI Animations
-- Beautiful Piece Effects
+- Modern Animations
 
 ---
 
@@ -120,7 +158,7 @@ Additional customization includes:
 
 ## 🏠 Landing Page
 
-A modern homepage introducing Knightfall with a clean interface focused on competitive chess and game analysis.
+Modern homepage introducing Knightfall.
 
 ![Landing Page](screenshots/landing-page.png)
 
@@ -128,7 +166,7 @@ A modern homepage introducing Knightfall with a clean interface focused on compe
 
 ## 🌍 Online Matchmaking
 
-Search for live opponents using WebSocket-powered matchmaking. Players selecting the same time control are automatically paired into an online game.
+Automatically pair with players using WebSocket matchmaking.
 
 ![Online Matchmaking](screenshots/online-matchmaking.png)
 
@@ -136,7 +174,7 @@ Search for live opponents using WebSocket-powered matchmaking. Players selecting
 
 ## ⏱ AI Match Setup
 
-Configure your preferred game time, choose your side, select an AI difficulty, and customize the chess board before every match.
+Choose your time control, side, AI difficulty and board theme.
 
 ![AI Setup](screenshots/ai-settings.png)
 
@@ -144,7 +182,7 @@ Configure your preferred game time, choose your side, select an AI difficulty, a
 
 ## ♟ Gameplay
 
-Play against Knightfall AI or another online player with live timers, move coaching, responsive controls, and real-time move synchronization.
+Play with live timers, move coaching and responsive controls.
 
 ![Gameplay](screenshots/gameplay.png)
 
@@ -152,7 +190,7 @@ Play against Knightfall AI or another online player with live timers, move coach
 
 ## 📊 Stockfish Analysis
 
-Review every move with Stockfish-powered engine evaluations, detailed explanations, and color-coded move classifications that make learning easier.
+Review every move with Stockfish-powered engine evaluations and detailed explanations.
 
 ![Analysis](screenshots/analysis.png)
 
@@ -160,7 +198,7 @@ Review every move with Stockfish-powered engine evaluations, detailed explanatio
 
 ## 🎬 Interactive Replay
 
-Replay every move using an interactive timeline featuring dark mode, smooth navigation controls, and highlighted move quality for every position.
+Replay games with move navigation and color-coded evaluations.
 
 ![Replay](screenshots/replay.png)
 
@@ -168,40 +206,50 @@ Replay every move using an interactive timeline featuring dark mode, smooth navi
 
 ## 🎨 Board Themes
 
-Instantly switch between six handcrafted board themes during gameplay to personalize your chess experience.
+Instantly switch between six handcrafted board themes.
 
 ![Themes](screenshots/themes.gif)
 
 ---
 
+# 📊 Feature Overview
+
+| Feature | Knightfall |
+|---------|:----------:|
+| AI Opponents | ✅ |
+| Online Multiplayer | ✅ |
+| Stockfish Analysis | ✅ |
+| Interactive Replay | ✅ |
+| Multiple Time Controls | ✅ |
+| Board Themes | ✅ |
+| Light & Dark Mode | ✅ |
+| Responsive UI | ✅ |
+
+---
+
 # 🛠 Technology Stack
 
-### Frontend
+<p align="center">
 
-- HTML5
-- CSS3
-- Vanilla JavaScript
+<img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white">
 
-### Backend
+<img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white">
 
-- Node.js
-- Native HTTP Server
-- WebSockets
+<img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black">
 
-### Chess Engine
+<img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white">
 
-- Stockfish 18 Lite (WebAssembly)
+<img src="https://img.shields.io/badge/WebSocket-2563EB?style=for-the-badge">
 
-### Deployment
+<img src="https://img.shields.io/badge/Stockfish-18-B45309?style=for-the-badge">
 
-- GitHub
-- Render
+</p>
 
 ---
 
 # 📂 Project Structure
 
-```
+```text
 Knightfall Chess
 │
 ├── engine/
@@ -223,27 +271,14 @@ Knightfall Chess
 
 # 🚀 Run Locally
 
-1. Install the latest Node.js LTS version.
-
-2. Clone the repository.
-
 ```bash
 git clone https://github.com/Loledproski/knightfall-chess.git
-```
-
-3. Install dependencies.
-
-```bash
+cd knightfall-chess
 npm install
-```
-
-4. Start the server.
-
-```bash
 npm start
 ```
 
-5. Open your browser and visit:
+Open:
 
 ```
 http://localhost:3000
@@ -252,8 +287,6 @@ http://localhost:3000
 ---
 
 # 🚀 Future Roadmap
-
-Knightfall is actively evolving, with several exciting features planned for future releases.
 
 ### Competitive
 
@@ -279,15 +312,15 @@ Knightfall is actively evolving, with several exciting features planned for futu
 ### Platform
 
 - Cloud Save
-- Mobile Optimization
 - Progressive Web App (PWA)
+- Mobile Optimization
 - Custom Piece Sets
 
 ---
 
 # 📜 License
 
-This project is licensed under the MIT License.
+Licensed under the MIT License.
 
 ---
 
@@ -302,8 +335,8 @@ This project is licensed under the MIT License.
 
 <p align="center">
 
-Made with ❤️ by **Harsh Mishra**
+Made with ❤️ by <b>Harsh Mishra</b>
 
-If you enjoyed this project, consider giving it a ⭐ on GitHub!
+⭐ If you enjoyed Knightfall Chess, consider giving this repository a star!
 
 </p>
