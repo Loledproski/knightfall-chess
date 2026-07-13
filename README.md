@@ -4,7 +4,7 @@
 
 # Play the move. Know the story.
 
-A modern browser-based chess platform that combines beautiful design, competitive gameplay, and powerful post-game analysis. Challenge AI opponents, play online with friends, customize your board, and review every move with Stockfish-powered engine analysis.
+A modern browser-based chess platform where every game becomes a learning experience. Challenge progressive AI opponents, compete in real-time online matches, customize your board, and review every move with Stockfish-powered engine analysis and an interactive replay system.
 
 🌐 **Live Demo:** https://knightfall-chess.onrender.com
 
