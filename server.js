@@ -7,6 +7,7 @@ const PORT = process.env.PORT || 3000;
 const clients = new Set();
 const waitingPlayers = [];
 const rooms = new Map();
+const TIME_CONTROLS = new Set(['bullet', 'blitz', 'rapid', 'classical']);
 
 const mimeTypes = {
   '.css': 'text/css; charset=utf-8',
@@ -95,17 +96,19 @@ function readFrames(client, chunk) {
 }
 
 function handleMessage(client, message) {
-  if (message.type === 'joinQueue') joinQueue(client);
+  if (message.type === 'joinQueue') joinQueue(client, message);
   if (message.type === 'move' && client.roomId) relayMove(client, message);
   if (message.type === 'resign' && client.roomId) relayToOpponent(client, { type: 'opponentResigned' });
 }
 
-function joinQueue(client) {
+function joinQueue(client, message) {
   if (client.roomId) return;
-  const opponent = waitingPlayers.shift();
+  client.timeControl = TIME_CONTROLS.has(message.timeControl) ? message.timeControl : 'blitz';
+  const opponentIndex = waitingPlayers.findIndex((player) => !player.socket.destroyed && player.timeControl === client.timeControl);
+  const opponent = opponentIndex >= 0 ? waitingPlayers.splice(opponentIndex, 1)[0] : null;
   if (!opponent || opponent.socket.destroyed) {
     waitingPlayers.push(client);
-    send(client, { type: 'queued' });
+    send(client, { type: 'queued', timeControl: client.timeControl });
     return;
   }
 
@@ -117,13 +120,17 @@ function joinQueue(client) {
   whitePlayer.color = 'white';
   blackPlayer.color = 'black';
   rooms.set(roomId, [opponent, client]);
-  send(whitePlayer, { type: 'matchFound', color: 'white' });
-  send(blackPlayer, { type: 'matchFound', color: 'black' });
+  send(whitePlayer, { type: 'matchFound', color: 'white', timeControl: client.timeControl });
+  send(blackPlayer, { type: 'matchFound', color: 'black', timeControl: client.timeControl });
 }
 
 function relayMove(client, message) {
   if (!message.move || typeof message.move.from !== 'string' || typeof message.move.to !== 'string') return;
-  relayToOpponent(client, { type: 'opponentMove', move: message.move });
+  const clocks = message.clocks;
+  const safeClocks = clocks && Number.isFinite(clocks.white) && Number.isFinite(clocks.black)
+    ? { white: Math.max(0, Math.floor(clocks.white)), black: Math.max(0, Math.floor(clocks.black)) }
+    : undefined;
+  relayToOpponent(client, { type: 'opponentMove', move: message.move, clocks: safeClocks });
 }
 
 function relayToOpponent(client, message) {

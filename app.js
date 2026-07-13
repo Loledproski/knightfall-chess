@@ -16,6 +16,12 @@ const DIFFICULTY_LEVELS = [
   { id: 'kasparov', name: 'Garry Kasparov', elo: '2900', pool: 1, replies: true, think: 1160 },
   { id: 'magnus', name: 'Magnus Carlsen', elo: '3200+', pool: 1, replies: true, think: 1300 },
 ];
+const TIME_CONTROLS = [
+  { id: 'bullet', name: 'Bullet', seconds: 60, label: '1 min Bullet' },
+  { id: 'blitz', name: 'Blitz', seconds: 300, label: '5 min Blitz' },
+  { id: 'rapid', name: 'Rapid', seconds: 1800, label: '30 min Rapid' },
+  { id: 'classical', name: 'Classical', seconds: 3600, label: '60 min Classical' },
+];
 const PROGRESS_KEY = 'knightfall-player-progress-v2';
 const THEME_KEY = 'knightfall-theme-v1';
 const BOARD_THEME_KEY = 'knightfall-board-theme-v1';
@@ -24,6 +30,7 @@ const BOARD_THEMES = ['classic', 'medieval', 'scifi', 'nature', 'luxury', 'fun']
 const boardElement = document.querySelector('#board');
 const moveListElement = document.querySelector('#moveList');
 const queueOverlay = document.querySelector('#queueOverlay');
+const matchmakingModal = document.querySelector('#matchmakingModal');
 const toastElement = document.querySelector('#toast');
 const gameEndModal = document.querySelector('#gameEndModal');
 const captureCallout = document.querySelector('#captureCallout');
@@ -79,6 +86,7 @@ function resetGame(options = {}) {
   gameEndModal.classList.add('is-hidden');
   replayModal.classList.add('is-hidden');
   const nextMode = options.mode || state?.mode || 'local';
+  const timeControl = getTimeControl(options.timeControl || playerProgress.selectedTimeControl);
   const startingBoard = createInitialBoard();
   gameRevision += 1;
   state = {
@@ -95,8 +103,11 @@ function resetGame(options = {}) {
     enPassant: null,
     flipped: options.flipped ?? ((nextMode === 'online' && options.onlineColor === 'black') || (nextMode === 'computer' && options.playerColor === 'black')),
     mode: nextMode,
-    onlineColor: options.onlineColor || null,
+    onlineColor: options.onlineColor || (nextMode === 'online' ? 'white' : null),
     playerColor: options.playerColor || state?.playerColor || 'white',
+    timeControl: timeControl.id,
+    onlineMatched: Boolean(options.onlineMatched),
+    connectionStatus: options.connectionStatus || null,
     aiDifficulty: options.aiDifficulty || state?.aiDifficulty || playerProgress.selectedDifficulty || 'intermediate',
     aiThinking: false,
     pendingPromotion: null,
@@ -108,7 +119,7 @@ function resetGame(options = {}) {
     gameOver: false,
     result: null,
     winner: null,
-    clocks: { white: 600, black: 600 },
+    clocks: { white: timeControl.seconds, black: timeControl.seconds },
   };
   render();
 }
@@ -118,7 +129,7 @@ function colorOf(piece) {
 }
 
 function otherColor(color) { return color === 'white' ? 'black' : 'white'; }
-function humanColor() { return state.mode === 'online' ? state.onlineColor : state.mode === 'computer' ? state.playerColor : 'white'; }
+function humanColor() { return state.mode === 'online' ? (state.onlineColor || 'white') : state.mode === 'computer' ? state.playerColor : 'white'; }
 function humanCanMove() { return state.mode !== 'computer' || state.turn === humanColor(); }
 function inside(row, col) { return row >= 0 && row < 8 && col >= 0 && col < 8; }
 function squareName(square) { return `${FILES[square.c]}${8 - square.r}`; }
@@ -134,14 +145,33 @@ function render() {
   renderDifficultyLadder();
   renderPromotionPicker();
   renderBoardEffects();
+  const modeSwitch = document.querySelector('.mode-switch');
+  modeSwitch.dataset.activeMode = state.mode;
   document.querySelectorAll('.mode-button').forEach((button) => {
     button.classList.toggle('active', button.dataset.mode === state.mode);
+  });
+  document.querySelector('#timeControlChoices').dataset.activeTime = playerProgress.selectedTimeControl;
+  document.querySelectorAll('[data-time-control]').forEach((button) => {
+    button.classList.toggle('active', button.dataset.timeControl === playerProgress.selectedTimeControl);
   });
   document.querySelector('#aiDifficulty').classList.toggle('is-hidden', state.mode !== 'computer');
   document.querySelectorAll('.ai-side-button').forEach((button) => {
     button.classList.toggle('active', button.dataset.aiColor === state.playerColor);
   });
-  queueOverlay.classList.toggle('is-hidden', !state.queued);
+  queueOverlay.classList.add('is-hidden');
+  renderMatchmaking();
+}
+
+function renderMatchmaking() {
+  matchmakingModal.classList.toggle('is-hidden', !state.queued);
+  if (!state.queued) return;
+  const control = getTimeControl(state.timeControl);
+  const searching = state.connectionStatus === 'searching';
+  document.querySelector('#matchmakingTitle').textContent = searching ? 'Finding your opponent' : 'Connecting to online play';
+  document.querySelector('#matchmakingMessage').textContent = searching
+    ? 'We are looking for a player who chose the same time control. Keep this tab open.'
+    : 'Opening a secure connection to the Knightfall chess server.';
+  document.querySelector('#queueTimeControl').textContent = control.label;
 }
 
 function renderDifficultyLadder() {
@@ -228,17 +258,19 @@ function renderGamePanel() {
   const opponentColor = otherColor(playerColor);
   const topName = online ? 'Online opponent' : computer ? 'Knightfall AI' : 'New opponent';
   document.querySelector('#topPlayerName').textContent = topName;
+  if (online && !state.onlineMatched) document.querySelector('#topPlayerName').textContent = 'Knightfall arena';
   document.querySelector('#topPlayerMeta').textContent = online
     ? `${capitalize(opponentColor)} · connected`
     : computer ? `${getDifficulty(state.aiDifficulty).name} · ~${getDifficulty(state.aiDifficulty).elo} Elo` : 'Pass the board to a friend';
   document.querySelector('#bottomPlayerMeta').textContent = `${capitalize(playerColor)} · ${state.turn === playerColor ? 'your move' : 'waiting'}`;
+  if (online && !state.onlineMatched) document.querySelector('#topPlayerMeta').textContent = state.connectionStatus === 'connecting' ? 'Secure connection starting' : 'Finding an opponent';
   document.querySelector('#topClock').textContent = formatClock(state.clocks[opponentColor]);
   document.querySelector('#bottomClock').textContent = formatClock(state.clocks[playerColor]);
   document.querySelector('#topClock').classList.toggle('active-clock', state.turn === opponentColor && !state.gameOver);
   document.querySelector('#bottomClock').classList.toggle('active-clock', state.turn === playerColor && !state.gameOver);
 
   let status = state.gameOver ? state.result : `${capitalize(state.turn)} to move`;
-  if (!state.gameOver && online && state.turn !== playerColor) status = 'Opponent is thinking';
+  if (!state.gameOver && online && state.onlineMatched && state.turn !== playerColor) status = 'Opponent is thinking';
   if (!state.gameOver && computer && (state.aiThinking || state.turn !== playerColor)) status = 'Knightfall AI is thinking';
   if (state.queued) status = 'Searching for an opponent…';
   document.querySelector('#gameStatus').lastElementChild.textContent = status;
@@ -604,7 +636,7 @@ function makeMove(move, remote = false) {
   queueStockfishReview(historyIndex, state.gameRevision);
 
   if (!remote && state.mode === 'online' && socket?.readyState === WebSocket.OPEN) {
-    socket.send(JSON.stringify({ type: 'move', move: { from: squareName(move.from), to: squareName(move.to), promotion: move.promotion ? (move.promotionPiece || 'q') : null } }));
+    socket.send(JSON.stringify({ type: 'move', move: { from: squareName(move.from), to: squareName(move.to), promotion: move.promotion ? (move.promotionPiece || 'q') : null }, clocks: state.clocks }));
   }
   if (gameEnded) showGameEndModal();
   if (shouldAIMove) scheduleAIMove();
@@ -724,6 +756,23 @@ function getDifficulty(id) {
 }
 
 function difficultyFallback() { return DIFFICULTY_LEVELS[2]; }
+function getTimeControl(id) { return TIME_CONTROLS.find((control) => control.id === id) || TIME_CONTROLS[1]; }
+
+function chooseTimeControl(id) {
+  const control = getTimeControl(id);
+  if (state.queued) {
+    showToast('Cancel the online search before changing the time control.');
+    return;
+  }
+  playerProgress.selectedTimeControl = control.id;
+  savePlayerProgress();
+  if (!state.history.length && !state.aiThinking && !state.gameOver) {
+    state.timeControl = control.id;
+    state.clocks = { white: control.seconds, black: control.seconds };
+  }
+  render();
+  showToast(`${control.label} selected.`);
+}
 
 function loadPlayerProgress() {
   try {
@@ -732,10 +781,11 @@ function loadPlayerProgress() {
       return {
         unlockedThrough: Math.min(DIFFICULTY_LEVELS.length - 1, Math.max(4, saved.unlockedThrough)),
         selectedDifficulty: DIFFICULTY_LEVELS.some((level) => level.id === saved.selectedDifficulty) ? saved.selectedDifficulty : 'intermediate',
+        selectedTimeControl: TIME_CONTROLS.some((control) => control.id === saved.selectedTimeControl) ? saved.selectedTimeControl : 'blitz',
       };
     }
   } catch { /* A private browser session can block saved progress. */ }
-  return { unlockedThrough: 4, selectedDifficulty: 'intermediate' };
+  return { unlockedThrough: 4, selectedDifficulty: 'intermediate', selectedTimeControl: 'blitz' };
 }
 
 function savePlayerProgress() {
@@ -1010,26 +1060,46 @@ function startOnlineMatch() {
     return;
   }
   if (socket?.readyState === WebSocket.OPEN || state.queued) return;
-  state.mode = 'online';
+  const control = getTimeControl(playerProgress.selectedTimeControl);
+  resetGame({ mode: 'online', onlineColor: 'white', flipped: false, timeControl: control.id, connectionStatus: 'connecting' });
   state.queued = true;
   render();
-  socket = new WebSocket(`${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.host}/ws`);
-  socket.addEventListener('open', () => socket.send(JSON.stringify({ type: 'joinQueue' })));
-  socket.addEventListener('message', (event) => handleServerMessage(JSON.parse(event.data)));
-  socket.addEventListener('error', () => {
+  const connection = new WebSocket(`${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.host}/ws`);
+  socket = connection;
+  connection.addEventListener('open', () => {
+    if (socket !== connection) return;
+    state.connectionStatus = 'searching';
+    render();
+    connection.send(JSON.stringify({ type: 'joinQueue', timeControl: control.id }));
+  });
+  connection.addEventListener('message', (event) => handleServerMessage(JSON.parse(event.data)));
+  connection.addEventListener('error', () => {
+    if (socket !== connection) return;
     state.queued = false;
+    state.connectionStatus = 'error';
     render();
     showToast('Could not reach the game server. Make sure npm start is running.');
   });
-  socket.addEventListener('close', () => {
-    if (state.queued) { state.queued = false; render(); }
+  connection.addEventListener('close', () => {
+    if (socket !== connection) return;
+    socket = null;
+    if (state.queued) {
+      state.queued = false;
+      state.connectionStatus = 'error';
+      render();
+      showToast('The online connection closed. Try searching again.');
+    }
   });
 }
 
 function handleServerMessage(message) {
-  if (message.type === 'queued') return;
+  if (message.type === 'queued') {
+    state.connectionStatus = 'searching';
+    render();
+    return;
+  }
   if (message.type === 'matchFound') {
-    resetGame({ mode: 'online', onlineColor: message.color, flipped: message.color === 'black' });
+    resetGame({ mode: 'online', onlineColor: message.color, flipped: message.color === 'black', timeControl: message.timeControl || playerProgress.selectedTimeControl, onlineMatched: true, connectionStatus: 'connected' });
     showToast(`Match found — you are playing ${message.color}.`);
   }
   if (message.type === 'opponentMove') {
@@ -1037,6 +1107,9 @@ function handleServerMessage(message) {
     const to = nameToSquare(message.move.to);
     const move = legalMovesFor(from).find((candidate) => candidate.to.r === to.r && candidate.to.c === to.c);
     if (move) {
+      if (message.clocks && Number.isFinite(message.clocks.white) && Number.isFinite(message.clocks.black)) {
+        state.clocks = { white: Math.max(0, Math.floor(message.clocks.white)), black: Math.max(0, Math.floor(message.clocks.black)) };
+      }
       if (move.promotion) move.promotionPiece = message.move.promotion || 'q';
       makeMove(move, true);
     }
@@ -1050,6 +1123,12 @@ function handleServerMessage(message) {
 function nameToSquare(name) { return { r: 8 - Number(name[1]), c: FILES.indexOf(name[0]) }; }
 function closeConnection() {
   if (socket) { socket.close(); socket = null; }
+}
+
+function cancelOnlineSearch() {
+  closeConnection();
+  resetGame({ mode: 'local', flipped: false });
+  showToast('Search cancelled. Local game ready.');
 }
 
 function endGame(result, winner = null) {
@@ -1187,6 +1266,10 @@ setInterval(() => {
 
 boardElement.addEventListener('click', handleSquareClick);
 document.querySelectorAll('.mode-button').forEach((button) => button.addEventListener('click', () => switchMode(button.dataset.mode)));
+document.querySelector('#timeControlChoices').addEventListener('click', (event) => {
+  const button = event.target.closest('[data-time-control]');
+  if (button) chooseTimeControl(button.dataset.timeControl);
+});
 document.querySelector('#heroPlayButton').addEventListener('click', () => { document.querySelector('#play').scrollIntoView(); switchMode('online'); });
 document.querySelector('#headerPlayButton').addEventListener('click', () => { document.querySelector('#play').scrollIntoView(); switchMode('online'); });
 document.querySelector('#howItWorksButton').addEventListener('click', () => document.querySelector('#review').scrollIntoView());
@@ -1199,6 +1282,7 @@ document.querySelector('#resignButton').addEventListener('click', () => {
   endGame('You resigned — game ended', otherColor(humanColor()));
 });
 document.querySelector('#cancelQueueButton').addEventListener('click', () => { closeConnection(); resetGame({ mode: 'local', flipped: false }); showToast('Search cancelled. Local game ready.'); });
+document.querySelector('#matchmakingModal [data-cancel-queue]').addEventListener('click', cancelOnlineSearch);
 document.querySelector('#difficultyTrack').addEventListener('click', (event) => {
   const button = event.target.closest('[data-ai-level]');
   if (button) startComputerGame(button.dataset.aiLevel, state.playerColor);
