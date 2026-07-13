@@ -1238,6 +1238,12 @@ function pointKnightAt(event) {
   setKnightPose();
 }
 
+function spinKnight() {
+  heroKnight.classList.remove('spinning');
+  void heroKnight.offsetWidth;
+  heroKnight.classList.add('spinning');
+}
+
 function setupHeroKnight() {
   heroKnight.addEventListener('pointerdown', (event) => {
     event.preventDefault();
@@ -1261,7 +1267,7 @@ function setupHeroKnight() {
   });
   const releaseKnight = (event) => {
     if (!knightDrag || knightDrag.pointerId !== event.pointerId) return;
-    if (!knightDrag.moved) knightPose.rotation += 360;
+    if (!knightDrag.moved) spinKnight();
     knightDrag = null;
     heroKnight.classList.remove('dragging');
     setKnightPose();
@@ -1273,6 +1279,9 @@ function setupHeroKnight() {
     knightPose.tiltX = -4;
     knightPose.tiltY = 7;
     setKnightPose();
+  });
+  heroKnight.addEventListener('animationend', (event) => {
+    if (event.animationName === 'knight-figure-turn') heroKnight.classList.remove('spinning');
   });
 }
 
