@@ -1,6 +1,31 @@
 # Knightfall Chess
 
 An original multiplayer chess website starter built without third-party packages.
+## 📸 Screenshots
+
+### 🏠 Landing Page
+
+![Landing Page](screenshots/landing-page.png)
+
+---
+
+### 🤖 AI Difficulty Ladder
+
+![AI Ladder](screenshots/ai-ladder.png)
+
+---
+
+### ♟️ Gameplay
+
+![Gameplay](screenshots/gameplay.png)
+
+---
+
+### 📊 Move Review & Replay
+
+![Review](screenshots/review.png)
+
+---
 
 ## Run it locally
 
