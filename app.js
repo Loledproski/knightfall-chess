@@ -360,11 +360,11 @@ function renderReplay() {
 
   const entry = state.replayIndex ? state.history[state.replayIndex - 1] : null;
   replayMoveMeta.innerHTML = entry
-    ? `<strong>${entry.label} · ${entry.notation}</strong><span>Move ${state.replayIndex} · ${capitalize(entry.color)} · ${entry.note}</span>`
+    ? `<strong><span class="replay-head-symbol quality-${entry.quality}" aria-hidden="true"></span>${entry.label} &middot; ${entry.notation}</strong><span>Move ${state.replayIndex} &middot; ${capitalize(entry.color)} &middot; ${entry.note}</span>`
     : '<strong>Starting position</strong><span>Press Play or choose any move to walk through the whole game.</span>';
   replayMoveList.innerHTML = state.history.map((move, index) => `
     <li><button type="button" data-replay-index="${index + 1}" class="${state.replayIndex === index + 1 ? 'active' : ''}">
-      <span class="replay-number">${index + 1}</span><strong>${move.notation}</strong><em>${move.label}</em>
+      <span class="replay-number">${index + 1}</span><strong>${move.notation}</strong><em class="replay-quality quality-${move.quality}">${move.label}</em>
     </button></li>`).join('');
   replayPlayButton.textContent = replayTimer ? 'Pause' : 'Play';
 }
