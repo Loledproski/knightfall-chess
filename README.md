@@ -7,8 +7,6 @@ A modern multiplayer chess platform featuring local play, AI opponents, online m
 
 **💻 GitHub Repository:** https://github.com/Loledproski/knightfall-chess
 
-> ⚠️ **Project Status:** Online matchmaking is currently under active development. Local Play, AI Ladder, and Stockfish Review are fully functional.
-
 ---
 
 ## ✨ Features
