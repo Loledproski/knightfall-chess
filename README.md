@@ -1,6 +1,31 @@
 # Knightfall Chess
+A modern multiplayer chess platform featuring local play, AI opponents, online matchmaking, and Stockfish-powered game review.
 
-An original multiplayer chess website starter built without third-party packages.
+## 🌐 Live Demo
+
+**🎮 Play Knightfall:** https://knightfall-chess.onrender.com
+
+**💻 GitHub Repository:** https://github.com/Loledproski/knightfall-chess
+
+> ⚠️ **Project Status:** Online matchmaking is currently under active development. Local Play, AI Ladder, and Stockfish Review are fully functional.
+
+---
+
+## ✨ Features
+
+- ♟️ Local Pass-and-Play Chess
+- 🤖 10-Level AI Difficulty Ladder
+- 👑 Legendary Opponents Unlock System
+- 🌍 Online Multiplayer (Work in Progress)
+- 🧠 Stockfish-Powered Move Review
+- 📈 Interactive Game Replay
+- 🎨 Multiple Board Themes
+- 🌗 Light & Dark Mode
+- ⚡ Responsive Modern UI
+- 🚀 Hosted on Render
+
+---
+
 ## 📸 Screenshots
 
 ### 🏠 Landing Page
